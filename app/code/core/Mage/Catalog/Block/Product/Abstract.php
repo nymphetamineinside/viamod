@@ -63,7 +63,7 @@ abstract class Mage_Catalog_Block_Product_Abstract extends Mage_Core_Block_Templ
      *
      * @var int
      */
-    protected $_defaultColumnCount = 3;
+    protected $_defaultColumnCount = 5;
 
     /**
      * Product amount per row depending on custom page layout of category
