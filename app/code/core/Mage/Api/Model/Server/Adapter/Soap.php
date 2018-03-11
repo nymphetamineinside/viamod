@@ -120,7 +120,9 @@ class Mage_Api_Model_Server_Adapter_Soap
                 unset($queryParams['wsdl']);
             }
 
-            $wsdlConfig->setUrl(htmlspecialchars(Mage::getUrl('*/*/*', array('_query'=>$queryParams))));
+            $wsdlConfig->setUrl(
+                Mage::helper('api')->getServiceUrl('*/*/*', array('_query' => $queryParams), true)
+            );
             $wsdlConfig->setName('Magento');
             $wsdlConfig->setHandler($this->getHandler());
 
@@ -205,15 +207,17 @@ class Mage_Api_Model_Server_Adapter_Soap
             ->setUseSession(false);
 
         $wsdlUrl = $params !== null
-            ? $urlModel->getUrl('*/*/*', array('_current' => true, '_query' => $params))
-            : $urlModel->getUrl('*/*/*');
+            ? Mage::helper('api')->getServiceUrl('*/*/*', array('_current' => true, '_query' => $params))
+            : Mage::helper('api')->getServiceUrl('*/*/*');
 
-        if( $withAuth ) {
-            $phpAuthUser = $this->getController()->getRequest()->getServer('PHP_AUTH_USER', false);
-            $phpAuthPw = $this->getController()->getRequest()->getServer('PHP_AUTH_PW', false);
+        if ( $withAuth ) {
+            $phpAuthUser = rawurlencode($this->getController()->getRequest()->getServer('PHP_AUTH_USER', false));
+            $phpAuthPw = rawurlencode($this->getController()->getRequest()->getServer('PHP_AUTH_PW', false));
+            $scheme = rawurlencode($this->getController()->getRequest()->getScheme());
 
             if ($phpAuthUser && $phpAuthPw) {
-                $wsdlUrl = sprintf("http://%s:%s@%s", $phpAuthUser, $phpAuthPw, str_replace('http://', '', $wsdlUrl ));
+                $wsdlUrl = sprintf("%s://%s:%s@%s", $scheme, $phpAuthUser, $phpAuthPw,
+                    str_replace($scheme . '://', '', $wsdlUrl));
             }
         }
 
