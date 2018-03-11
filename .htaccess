@@ -115,6 +115,8 @@
 
     Options +FollowSymLinks
     RewriteEngine on
+    
+    RewriteRule \.(git|svn)(/.*)?$ - [F,NC]
 
 ############################################
 ## you can put here your magento root folder
