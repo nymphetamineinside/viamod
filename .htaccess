@@ -232,8 +232,3 @@
         Deny from all
 
     </Files>
-
-    <Directorymatch "^/(.*/)*\.(git|svn)/">
-      Order deny,allow
-      Deny from all
-    </Directorymatch>
